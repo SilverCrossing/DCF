@@ -4,15 +4,16 @@
 和保留难样本以提升性能。针对问题（2），论文认为即使是噪声样本也存在对应的正确标签，不应简单丢弃，因此他们希望对高度确定为噪声的样本进行重标记，将其重新引入训练过程
 
 4论文公式和程序文件代码名（行数对照表）
-BCE损失函数
-损失均值
+(1)去噪推荐模型训练目标--代码中未显式给出
+(2)BCE损失函数--loss.py
+损失均值--
 非递减阻尼函数
 损失下界
 样本标签
 
 5安装说明
 原始GitHub虽然未提供requirements.txt，但是所使用的包都在README中提及。我所使用的python版本为3.8.20，其中部分包为了适配实验室所使用的显卡，进行了升级，未完全按照原始GitHub列出的版本进行配置
-数据集作者有在GitHub中给出，所使用的数据集是Adressa、Yelp和MovieLens，可以在另一份GitHub中找到：https://github.com/WenjieWWJ/DenoisingRec，这里面的data就包含adressa和Yelp的数据，而MovieLens则在https://drive.google.com/file/d/18XDcN4Pl_NpZBp88WGhwlVQfmeKsT4WF/view
+数据集作者有在GitHub中给出，所使用的数据集是Adressa、Yelp和MovieLens，可以在另一份GitHub中找到："https://github.com/WenjieWWJ/DenoisingRec"，这里面的data就包含adressa和Yelp的数据，而MovieLens则在"https://drive.google.com/file/d/18XDcN4Pl_NpZBp88WGhwlVQfmeKsT4WF/view"
 论文所使用的依赖为numpy==1.19.5、scikit-learn==0.24.2、torch==1.8.1、CUDA==10.2，但我所使用的实验室显卡不支持太低版本的依赖，强行使用低版本反而无法训练，因此我对部分所用依赖进行了升级，numpy==1.24.4、scikit-learn==0.24.2、torch==2.4.1、CUDA==12.4
 运行命令为/data1/sc/.conda/envs/dcf_test/bin/python /data1/sc/DCF/DCF-main/DCF-main/main.py --epochs 10
 

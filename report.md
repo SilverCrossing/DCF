@@ -10,7 +10,7 @@ BCE损失函数--loss.py
 公式（2）带阻尼函数的平均损失计算--loss.py
 公式（3）--loss.py
 公式（4）损失下界--loss.py
-样本标签
+
 
 5安装说明
 原始GitHub虽然未提供requirements.txt，但是所使用的包都在README中提及。我所使用的python版本为3.8.20，其中部分包为了适配实验室所使用的显卡，进行了升级，未完全按照原始GitHub列出的版本进行配置
@@ -19,6 +19,6 @@ BCE损失函数--loss.py
 运行命令为/data1/sc/.conda/envs/dcf_test/bin/python /data1/sc/DCF/DCF-main/DCF-main/main.py --epochs 10
 
 6运行/测试结果截图
-<img width="1280" height="800" alt="image" src="https://github.com/user-attachments/assets/0a220039-7be2-46fd-b220-70dca543273a" />
+
 
 

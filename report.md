@@ -22,9 +22,20 @@ BCE损失函数--loss.py
 数据集作者有在GitHub中给出，所使用的数据集是Adressa、Yelp和MovieLens，可以在另一份[Github](https://github.com/WenjieWWJ/DenoisingRec)中找到，这里面的data就包含adressa和Yelp的数据，而[MovieLens](https://drive.google.com/file/d/18XDcN4Pl_NpZBp88WGhwlVQfmeKsT4WF/view)则在google盘下载  
 论文所使用的依赖为numpy==1.19.5、scikit-learn==0.24.2、torch==1.8.1、CUDA==10.2，但我所使用的实验室显卡不支持太低版本的依赖，强行使用低版本反而无法训练，因此我对部分所用依赖进行了升级，numpy==1.24.4、scikit-learn==0.24.2、torch==2.4.1、CUDA==12.4  
 
-'pip install numpy==1.24.4'
+``# 创建并激活虚拟环境``  
+``conda create dcf_test``  
+``conda activate dcf_test``  
 
-运行命令为/data1/sc/.conda/envs/dcf_test/bin/python /data1/sc/DCF/DCF-main/DCF-main/main.py --epochs 40
+``# 安装pytorch``  
+``conda install pytorch torchvision torchaudio pytorch-cuda=12.4 -c pytorch -c nvidia``  
+  
+``# 安装numpy和scikit-learn``
+``pip install numpy==1.24.4``
+``pip install scikit-learn==0.24.2``  
+
+
+``# 运行``  
+``/data1/sc/.conda/envs/dcf_test/bin/python /data1/sc/DCF/DCF-main/DCF-main/main.py --epochs 40``  
 
 ## 6运行/测试结果截图
 

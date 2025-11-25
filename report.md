@@ -10,16 +10,34 @@
 ### 方法流程图
 
 ## 4论文公式和程序文件代码名（行数对照表）
-去噪推荐模型训练目标--代码中未显式给出  
-BCE损失函数--loss.py  
-公式（1）损失均值--代码中未显式给出  
-公式（2）带阻尼函数的平均损失计算--loss.py  
-公式（3）--loss.py  
-公式（4）损失下界--loss.py  
-公式（5）渐进式重标记比例ri--main.py，使用的是固定值  
-公式（6）基于ri的损失阈值筛选--loss.py  
-公式（7）标签翻转--代码中未显式给出  
-附录公式（8）~（18）--对文中的定理1和公式（4）进行证明，代码中不负责实现  
+去噪推荐模型训练目标--作者仅仅进行论述，将去噪模型的训练抽象为一个公式，代码中未显式给出  
+<img width="125" height="35" alt="image" src="https://github.com/user-attachments/assets/01e31ca7-d40c-4c73-9665-90bc2a721761" />  
+  
+BCE损失函数--loss.py的第28行代码  
+<img width="311" height="41" alt="image" src="https://github.com/user-attachments/assets/c3aab758-b385-4f9b-97a1-cd6bdac094e3" />  
+  
+公式（1）损失均值--作者发现在训练过程中模型有可能会遇到极端损失值（尽管这种可能性很小）从而对均值计算造成负面影响，因此需要采取预防措施而非直接使用公式（1），代码实际使用的为公式（2），公式（1）代码中未显式给出  
+<img width="313" height="37" alt="image" src="https://github.com/user-attachments/assets/a28e79cb-fb76-4aa8-b093-4c6455b9a605" />  
+  
+公式（2）带阻尼函数的平均损失计算--loss.py的第35行代码  
+<img width="320" height="41" alt="image" src="https://github.com/user-attachments/assets/0da276d2-e1f7-4573-8f75-b25445343f1d" />  
+
+公式（3）--loss.py的第38到39行代码  
+<img width="315" height="46" alt="image" src="https://github.com/user-attachments/assets/44a1ffb7-00d2-45e0-8f41-bafe65e4781f" />  
+  
+公式（4）损失下界--loss.py的第41行代码  
+<img width="302" height="43" alt="image" src="https://github.com/user-attachments/assets/37a9cfec-cef7-4ca6-a691-453a07c8f0f6" />  
+  
+公式（5）渐进式重标记比例ri--main.py的第98行代码，使用的是固定值  
+<img width="304" height="31" alt="image" src="https://github.com/user-attachments/assets/3b1527ca-02db-4ecd-a249-12c9f31d7bd2" />  
+  
+公式（6）基于ri的损失阈值筛选--loss.py的第55行代码  
+<img width="311" height="38" alt="image" src="https://github.com/user-attachments/assets/c2d64062-872c-4d64-b48f-93e4cf041795" />  
+  
+公式（7）标签翻转--代码中未显式给出
+<img width="312" height="26" alt="image" src="https://github.com/user-attachments/assets/0a7cef44-62be-468d-a84f-14a5d6da5fc0" />  
+
+附录中的公式（8）到（18）--对文中的定理1和公式（4）进行证明所使用的，代码中不负责实现  
 
 
 ## 5安装说明
@@ -41,7 +59,7 @@ BCE损失函数--loss.py
 ``/data1/sc/.conda/envs/dcf_test/bin/python /data1/sc/DCF/DCF-main/DCF-main/main.py --epochs 40``  
   
 数据集作者有在GitHub中给出，所使用的数据集是Adressa、Yelp和MovieLens，可以在另一份[Github](https://github.com/WenjieWWJ/DenoisingRec)中找到，这里面的data就包含adressa和Yelp的数据，而[MovieLens](https://drive.google.com/file/d/18XDcN4Pl_NpZBp88WGhwlVQfmeKsT4WF/view)则在google盘下载  
-数据集作者进行了处理，Adressa中仅保留停留时间至少为10秒的交互；MovieLens中仅保留评分为5分的交互作为测试集；Yelp中仅保留评分高于3分的交互作为干净测试集  
+作者在论文中对数据集进行了处理，Adressa中仅保留停留时间至少为10秒的交互；MovieLens中仅保留评分为5分的交互作为测试集；Yelp中仅保留评分高于3分的交互作为干净测试集  
 
 
 ## 6运行/测试结果截图

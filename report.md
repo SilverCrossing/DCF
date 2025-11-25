@@ -10,31 +10,75 @@
 ### 方法流程图
 
 ## 4论文公式和程序文件代码名（行数对照表）
-去噪推荐模型训练目标--作者仅仅进行论述，将去噪模型的训练抽象为一个公式，代码中未显式给出  
+| 论文公式 | 代码位置 |
+|----------|---------|
+| 第二章第一公式 | 代码中未提及 |
+| 第二章第二公式 | loss.py的第27行代码 |
+| 公式（1）损失均值 | 代码中未提及 |
+| 公式（2）带阻尼函数的损失均值 | loss.py的第29到24行代码 |
+| 公式（3）置信区间界定公式 | loss.py的第36到38行代码 |
+| 公式（4）损失下界 | loss.py的39到40行代码 |
+| 公式（5）渐进式重标记比例ri | main.py的第98行代码 |
+| 公式（6）基于ri的损失阈值筛选 | loss.py的第55行代码 |
+| 公式（7）标签翻转 | 代码中未提及 |
+| 附录中公式（8）到（18） | 代码中未提及 |
+  
+第二章第一公式，去噪推荐模型训练目标--作者仅仅进行论述，将去噪模型的训练抽象为一个公式，代码中未显式给出  
 <img width="125" height="35" alt="image" src="https://github.com/user-attachments/assets/01e31ca7-d40c-4c73-9665-90bc2a721761" />  
   
-BCE损失函数--loss.py的第28行代码  
+第二章第二公式，BCE损失函数--loss.py的第27行代码  
 <img width="311" height="41" alt="image" src="https://github.com/user-attachments/assets/c3aab758-b385-4f9b-97a1-cd6bdac094e3" />  
-  
+```
+# 计算每个样本的二元交叉熵（带logits输入），不做reduce得到每个样本的损失，此处为论文所使用的损失函数，对应论文第二章BCE的公式``  
+# y对应模型预测，t对应真实标签，reduce=False表示不进行求和或平均，返回每个样本的损失值``  
+loss = F.binary_cross_entropy_with_logits(y, t, reduce = False)``  
+```  
 公式（1）损失均值--作者发现在训练过程中模型有可能会遇到极端损失值（尽管这种可能性很小）从而对均值计算造成负面影响，因此需要采取预防措施而非直接使用公式（1），代码实际使用的为公式（2），公式（1）代码中未显式给出  
 <img width="313" height="37" alt="image" src="https://github.com/user-attachments/assets/a28e79cb-fb76-4aa8-b093-4c6455b9a605" />  
   
-公式（2）带阻尼函数的平均损失计算--loss.py的第35行代码  
+公式（2）带阻尼函数的损失均值--loss.py的第29到34行代码  
 <img width="320" height="41" alt="image" src="https://github.com/user-attachments/assets/0da276d2-e1f7-4573-8f75-b25445343f1d" />  
+```
+# 只对正样本（t==1）关注损失，把负样本的损失置零（loss * t）
+loss_mul = loss * t
+# 对正样本损失做平滑处理（paper 中提出的 soft process）
+loss_mul = soft_process(loss_mul)  # soft process is non-decreasing damping function in the paper
+# 用之前的before_loss与当前loss_mul做指数/简单平均，计算历史平均损失，对应论文中第三章的公式（2）
+loss_mean = (before_loss * s + loss_mul) / (s + 1)   # computing mean loss in Eq.2
+```
 
-公式（3）--loss.py的第38到39行代码  
+公式（3）置信区间界定--loss.py的第36到38行代码  
 <img width="315" height="46" alt="image" src="https://github.com/user-attachments/assets/44a1ffb7-00d2-45e0-8f41-bafe65e4781f" />  
-  
-公式（4）损失下界--loss.py的第41行代码  
+```
+# 计算置信界（confidence bound），对应论文中第三章的公式（3）
+confidence_bound = co_lambda * (s + (co_lambda * torch.log(2 * s)) / (s * s)) / ((sn + 1) - co_lambda)
+confidence_bound = confidence_bound.squeeze()
+```
+
+公式（4）损失下界--loss.py的第39到40行代码
 <img width="302" height="43" alt="image" src="https://github.com/user-attachments/assets/37a9cfec-cef7-4ca6-a691-453a07c8f0f6" />  
-  
-公式（5）渐进式重标记比例ri--main.py的第98行代码，使用的是固定值  
+```
+# 只保留大于置信界的部分，作为高损失的判定依据，对应论文中第三章的公式（4）
+loss_mul = F.relu(loss_mean.float() - confidence_bound.cuda().float())  # loss low bound in Eq.4
+```
+
+公式（5）渐进式重标记比例ri--main.py的第98行代码，但不知为何并未实现动态改变，使用的是固定值  
 <img width="304" height="31" alt="image" src="https://github.com/user-attachments/assets/3b1527ca-02db-4ecd-a249-12c9f31d7bd2" />  
-  
+```
+parser.add_argument("--relabel_ratio",   # 论文中渐进式重标记比例ri，设定为固定值
+	type=float,
+	default=0.05,
+	help="relabel ratio")
+```
+
 公式（6）基于ri的损失阈值筛选--loss.py的第55行代码  
 <img width="311" height="38" alt="image" src="https://github.com/user-attachments/assets/c2d64062-872c-4d64-b48f-93e4cf041795" />  
-  
-公式（7）标签翻转--代码中未显式给出
+```
+# saved_ind_sorted：保留的索引（记住的前 num_remember 个）
+saved_ind_sorted = ind_sorted[:num_remember]   # 对应论文中的公式（6）
+```
+
+公式（7）标签翻转--作者在论文中提到，同时也通过公式（5）和（6）的代码执行锁定了需要翻转标签的数据，但不知处于什么原因，但代码中未显式给出此公式的实现
 <img width="312" height="26" alt="image" src="https://github.com/user-attachments/assets/0a7cef44-62be-468d-a84f-14a5d6da5fc0" />  
 
 附录中的公式（8）到（18）--对文中的定理1和公式（4）进行证明所使用的，代码中不负责实现  
@@ -43,26 +87,59 @@ BCE损失函数--loss.py的第28行代码
 ## 5安装说明
 原始GitHub虽然未提供requirements.txt，但是所使用的包都在README中提及。我所使用的python版本为3.8.20，其中部分包为了适配实验室所使用的显卡，进行了升级，未完全按照原始GitHub列出的版本进行配置  
 论文所使用的依赖为numpy==1.19.5、scikit-learn==0.24.2、torch==1.8.1、CUDA==10.2，但我所使用的实验室显卡不支持太低版本的依赖，强行使用低版本反而无法训练，因此我对部分所用依赖进行了升级，numpy==1.24.4、scikit-learn==0.24.2、torch==2.4.1、CUDA==12.4  
-  
-``# 创建并激活虚拟环境``  
-``conda create dcf_test``  
-``conda activate dcf_test``  
+```
+# 创建并激活虚拟环境
+conda create dcf_test
+conda activate dcf_test
 
-``# 安装pytorch，这里选择适配实验室显卡的cuda和pytorch版本，而非完全按照作者的配置``  
-``conda install pytorch torchvision torchaudio pytorch-cuda=12.4 -c pytorch -c nvidia``  
+# 安装pytorch，这里选择适配实验室显卡的cuda和pytorch版本，而非完全按照作者的配置
+conda install pytorch torchvision torchaudio pytorch-cuda=12.4 -c pytorch -c nvidia
   
-``# 安装numpy和scikit-learn，numpy选择适配pytorch版本的，scikit-learn版本和作者给出的一致``
-``pip install numpy==1.24.4``
-``pip install scikit-learn==0.24.2``  
+# 安装numpy和scikit-learn，numpy选择适配pytorch版本的，scikit-learn版本和作者给出的一致
+pip install numpy==1.24.4
+pip install scikit-learn==0.24.2
   
-``# 运行，除了轮次外其他按照默认参数进行``  
-``/data1/sc/.conda/envs/dcf_test/bin/python /data1/sc/DCF/DCF-main/DCF-main/main.py --epochs 40``  
-  
+# 运行，除了轮次外其他按照默认参数进行
+/data1/sc/.conda/envs/dcf_test/bin/python /data1/sc/DCF/DCF-main/DCF-main/main.py --epochs 40
+```  
 数据集作者有在GitHub中给出，所使用的数据集是Adressa、Yelp和MovieLens，可以在另一份[Github](https://github.com/WenjieWWJ/DenoisingRec)中找到，这里面的data就包含adressa和Yelp的数据，而[MovieLens](https://drive.google.com/file/d/18XDcN4Pl_NpZBp88WGhwlVQfmeKsT4WF/view)则在google盘下载  
 作者在论文中对数据集进行了处理，Adressa中仅保留停留时间至少为10秒的交互；MovieLens中仅保留评分为5分的交互作为测试集；Yelp中仅保留评分高于3分的交互作为干净测试集  
 
 
 ## 6运行/测试结果截图
+运行过程根据实验室的情况，对数据输出进行了部分修改，但不影响整体运行逻辑，仅仅是为了观察结果
+<img width="784" height="164" alt="image" src="https://github.com/user-attachments/assets/ff1dfc65-c1f2-4908-a16b-a2edc1ed2f0b" />  
+<img width="845" height="142" alt="image" src="https://github.com/user-attachments/assets/39589940-96dc-486d-b58c-407f9204e102" />  
+此处的Eval loss高达八百多实际上是作者在eval()函数中只是简单地对损失进行累加，从而出现每轮损失越来越高的情况。较为常见的做法应该是对每个batch将其按样本数加权累加，最后除以验证集样本总数得到验证集的平均损失，不知为何作者要这样做  
+```
+def eval(model, valid_loader, best_loss, count):
+    	
+    model.eval()
+    epoch_loss = 0
+    valid_loader.dataset.ng_sample() # negative sampling
+    for user, item, label, noisy_or_not in valid_loader:
+        user = user.cuda()
+        item = item.cuda()
+        label = label.float().cuda()
+
+        prediction = model(user, item)
+        loss = BCE_loss(prediction, label)
+        # loss = loss_function(prediction, label, drop_rate_schedule(count))
+        epoch_loss += loss.detach()
+    print("################### EVAL ######################")
+    print("Eval loss:{}".format(epoch_loss))
+    if epoch_loss < best_loss:
+        best_loss = epoch_loss
+        if args.out:
+            if not os.path.exists(model_path):
+                os.mkdir(model_path)
+            torch.save(model, '{}{}_{}-{}.pth'.format(model_path, args.model, args.drop_rate, args.num_gradual))
+    return best_loss
+```
+<img width="784" height="124" alt="image" src="https://github.com/user-attachments/assets/f436203d-ef8f-4061-b2a0-ae386b413677" />  
+
+
+
 
 
 

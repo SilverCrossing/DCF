@@ -95,7 +95,7 @@ parser.add_argument('--co_lambda',
 parser.add_argument('--epoch_decay_start', 
 	type=int, 
 	default=10)
-parser.add_argument("--relabel_ratio", 
+parser.add_argument("--relabel_ratio",   # 论文中渐进式重标记比例ri，设定为固定值
 	type=float,
 	default=0.05,
 	help="relabel ratio")

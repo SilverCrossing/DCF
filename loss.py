@@ -40,7 +40,8 @@ def PLC_uncertain_discard(user, item, train_mat, y, t, drop_rate, epoch, sn, bef
     num_remember = int(remember_rate * len(loss_sorted))
     
     highest_ind_sorted = ind_sorted[int(((1-relabel_ratio)+relabel_ratio*remember_rate)*len(loss_sorted)):]
-    saved_ind_sorted = ind_sorted[:num_remember]
+    # saved_ind_sorted是保留的索引（记住的前num_remember个）
+    saved_ind_sorted = ind_sorted[:num_remember]   # 对应论文中的公式（6）
     final_ind = torch.concat((highest_ind_sorted, saved_ind_sorted))
     lowest_ind_sorted = ind_sorted[:int(((1-relabel_ratio)+relabel_ratio*remember_rate)*len(loss_sorted))]
 
@@ -65,6 +66,7 @@ def loss_function(y, t, drop_rate):
     loss_update = F.binary_cross_entropy_with_logits(y[ind_update], t[ind_update])
 
     return loss_update
+
 
 
 

@@ -109,13 +109,8 @@ pip install scikit-learn==0.24.2
 ## 6运行/测试结果截图
 运行过程根据实验室的情况，对数据输出进行了部分修改，但不影响整体运行逻辑，仅仅是为了观察结果。
 <img width="1504" height="219" alt="屏幕截图 2025-11-26 172512" src="https://github.com/user-attachments/assets/82610a2a-5e00-4c07-82fe-006f5ce02b7d" />  
-运行的时候加载参数
-
-
-
-
-
-
-
+运行的时候加载参数  
+<img width="752" height="122" alt="image" src="https://github.com/user-attachments/assets/c7866b8d-6c24-4d55-838d-4eaf0ff693ee" />  
+运行结果，和作者的NeuMF模型上的结果相差不大。recall的四个数字分别表示recall@5、recall@10、recall@20、recall@50，recall@K表示前K个结果中有多少个项目是用户感兴趣的，K越小则对模型要求越高。NDCG（归一化累积折损增益）的四个数字同样是分为@5、@10、@20和@50，NDCG@K不仅考虑用户是否对前K个项目感兴趣，还要考虑感兴趣的项目是否排的靠前，对模型要求更高    
 
 

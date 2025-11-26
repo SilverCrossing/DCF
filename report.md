@@ -2,7 +2,7 @@
 ## 3论文总结
 ### 遇到的问题
 论文的研究认为现有方法存在两个局限性：  
-  （1）损失可能和噪声并没有高度相关性，优化过程存在不稳定性，因此样本损失可能会急剧波动从而可能会导致错误丢弃，以及干净交互样本可能存在困难性，难样本通常也会表现出高损失，但是对性能提升有很大帮助，丢弃它们反而可能会降低性能。  
+（1）损失可能和噪声并没有高度相关性，优化过程存在不稳定性，因此样本损失可能会急剧波动从而可能会导致错误丢弃，以及干净交互样本可能存在困难性，难样本通常也会表现出高损失，但是对性能提升有很大帮助，丢弃它们反而可能会降低性能。  
 （2）简单丢弃样本可能会加剧数据的稀疏性，造成样本浪费，还可能导致训练空间和干净的理想空间不一致。  
 ### 创新点  
 针对问题（1），论文认为损失和噪声相关性低的原因是模型预测的观察范围有限且未考虑难样本，论文的解决方法是通过扩展观察区间、聚合多轮训练迭代的损失值来稳定预测，并识别和保留难样本以提升性能。  
@@ -86,57 +86,33 @@ saved_ind_sorted = ind_sorted[:num_remember]   # 对应论文中的公式（6）
 
 ## 5安装说明
 原始GitHub虽然未提供requirements.txt，但是所使用的包都在README中提及。我所使用的python版本为3.8.20，其中部分包为了适配实验室所使用的显卡，进行了升级，未完全按照原始GitHub列出的版本进行配置  
-论文所使用的依赖为numpy==1.19.5、scikit-learn==0.24.2、torch==1.8.1、CUDA==10.2，但我所使用的实验室显卡不支持太低版本的依赖，强行使用低版本反而无法训练，因此我对部分所用依赖进行了升级，numpy==1.24.4、scikit-learn==0.24.2、torch==2.4.1、CUDA==12.4  
+论文所使用的依赖为numpy==1.19.5、scikit-learn==0.24.2、torch==1.8.1、CUDA==10.2
 ```
 # 创建并激活虚拟环境
 conda create dcf_test
 conda activate dcf_test
 
 # 安装pytorch，这里选择适配实验室显卡的cuda和pytorch版本，而非完全按照作者的配置
-conda install pytorch torchvision torchaudio pytorch-cuda=12.4 -c pytorch -c nvidia
+conda install pytorch torchvision torchaudio pytorch-cuda=10.2 -c pytorch -c nvidia
   
 # 安装numpy和scikit-learn，numpy选择适配pytorch版本的，scikit-learn版本和作者给出的一致
-pip install numpy==1.24.4
+pip install numpy==1.19.5
 pip install scikit-learn==0.24.2
   
-# 运行，除了轮次外其他按照默认参数进行
-/data1/sc/.conda/envs/dcf_test/bin/python /data1/sc/DCF/DCF-main/DCF-main/main.py --epochs 40
+# 运行，按照默认参数进行10epochs
+/data1/sc/.conda/envs/dcf_test/bin/python /data1/sc/DCF/DCF-main/DCF-main/main.py --epochs 10
 ```  
 数据集作者有在GitHub中给出，所使用的数据集是Adressa、Yelp和MovieLens，可以在另一份[Github](https://github.com/WenjieWWJ/DenoisingRec)中找到，这里面的data就包含adressa和Yelp的数据，而[MovieLens](https://drive.google.com/file/d/18XDcN4Pl_NpZBp88WGhwlVQfmeKsT4WF/view)则在google盘下载  
 作者在论文中对数据集进行了处理，Adressa中仅保留停留时间至少为10秒的交互；MovieLens中仅保留评分为5分的交互作为测试集；Yelp中仅保留评分高于3分的交互作为干净测试集  
 
 
 ## 6运行/测试结果截图
-运行过程根据实验室的情况，对数据输出进行了部分修改，但不影响整体运行逻辑，仅仅是为了观察结果
-<img width="784" height="164" alt="image" src="https://github.com/user-attachments/assets/ff1dfc65-c1f2-4908-a16b-a2edc1ed2f0b" />  
-<img width="845" height="142" alt="image" src="https://github.com/user-attachments/assets/39589940-96dc-486d-b58c-407f9204e102" />  
-此处的Eval loss高达八百多实际上是作者在eval()函数中只是简单地对损失进行累加，从而出现每轮损失越来越高的情况。较为常见的做法应该是对每个batch将其按样本数加权累加，最后除以验证集样本总数得到验证集的平均损失，不知为何作者要这样做  
-```
-def eval(model, valid_loader, best_loss, count):
-    	
-    model.eval()
-    epoch_loss = 0
-    valid_loader.dataset.ng_sample() # negative sampling
-    for user, item, label, noisy_or_not in valid_loader:
-        user = user.cuda()
-        item = item.cuda()
-        label = label.float().cuda()
+运行过程根据实验室的情况，对数据输出进行了部分修改，但不影响整体运行逻辑，仅仅是为了观察结果。
+<img width="1504" height="219" alt="屏幕截图 2025-11-26 172512" src="https://github.com/user-attachments/assets/82610a2a-5e00-4c07-82fe-006f5ce02b7d" />  
+运行的时候加载参数
 
-        prediction = model(user, item)
-        loss = BCE_loss(prediction, label)
-        # loss = loss_function(prediction, label, drop_rate_schedule(count))
-        epoch_loss += loss.detach()
-    print("################### EVAL ######################")
-    print("Eval loss:{}".format(epoch_loss))
-    if epoch_loss < best_loss:
-        best_loss = epoch_loss
-        if args.out:
-            if not os.path.exists(model_path):
-                os.mkdir(model_path)
-            torch.save(model, '{}{}_{}-{}.pth'.format(model_path, args.model, args.drop_rate, args.num_gradual))
-    return best_loss
-```
-<img width="784" height="124" alt="image" src="https://github.com/user-attachments/assets/f436203d-ef8f-4061-b2a0-ae386b413677" />  
+
+
 
 
 

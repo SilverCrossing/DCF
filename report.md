@@ -13,7 +13,7 @@
 | 论文公式 | 代码位置 |
 |----------|---------|
 | 第二章第一公式 | 代码中未提及 |
-| 第二章第二公式 | loss.py的第24行代码 |
+| 第二章第二公式 | loss.py的第19行代码 |
 | 公式（1）损失均值 | 代码中未提及 |
 | 公式（2）带阻尼函数的损失均值 | loss.py的第19到24行代码 |
 | 公式（3）置信区间界定公式 | loss.py的第36到38行代码 |
@@ -26,7 +26,7 @@
 第二章第一公式，去噪推荐模型训练目标--作者仅仅进行论述，将去噪模型的训练抽象为一个公式，代码中未显式给出  
 <img width="125" height="35" alt="image" src="https://github.com/user-attachments/assets/01e31ca7-d40c-4c73-9665-90bc2a721761" />  
   
-第二章第二公式，BCE损失函数--loss.py的第27行代码  
+第二章第二公式，BCE损失函数--loss.py的第19行代码  
 <img width="311" height="41" alt="image" src="https://github.com/user-attachments/assets/c3aab758-b385-4f9b-97a1-cd6bdac094e3" />  
 ```
 # 计算每个样本的二元交叉熵（带logits输入），不做reduce得到每个样本的损失，此处为论文所使用的损失函数，对应论文第二章BCE的公式``  
@@ -36,7 +36,7 @@ loss = F.binary_cross_entropy_with_logits(y, t, reduce = False)``
 公式（1）损失均值--作者发现在训练过程中模型有可能会遇到极端损失值（尽管这种可能性很小）从而对均值计算造成负面影响，因此需要采取预防措施而非直接使用公式（1），代码实际使用的为公式（2），公式（1）代码中未显式给出  
 <img width="313" height="37" alt="image" src="https://github.com/user-attachments/assets/a28e79cb-fb76-4aa8-b093-4c6455b9a605" />  
   
-公式（2）带阻尼函数的损失均值--loss.py的第29到34行代码  
+公式（2）带阻尼函数的损失均值--loss.py的第19到24行代码  
 <img width="320" height="41" alt="image" src="https://github.com/user-attachments/assets/0da276d2-e1f7-4573-8f75-b25445343f1d" />  
 ```
 # 只对正样本（t==1）关注损失，把负样本的损失置零（loss * t）

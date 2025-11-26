@@ -19,7 +19,7 @@
 | 公式（3）置信区间界定公式 | loss.py的第28到30行代码 |
 | 公式（4）损失下界 | loss.py的32到33行代码 |
 | 公式（5）渐进式重标记比例ri | main.py的第98行代码 |
-| 公式（6）基于ri的损失阈值筛选 | loss.py的第55行代码 |
+| 公式（6）基于ri的损失阈值筛选 | loss.py的第44行代码 |
 | 公式（7）标签翻转 | 代码中未提及 |
 | 附录中公式（8）到（18） | 代码中未提及 |
   
@@ -71,7 +71,7 @@ parser.add_argument("--relabel_ratio",   # 论文中渐进式重标记比例ri�
 	help="relabel ratio")
 ```
 
-公式（6）基于ri的损失阈值筛选--loss.py的第55行代码  
+公式（6）基于ri的损失阈值筛选--loss.py的第44行代码  
 <img width="311" height="38" alt="image" src="https://github.com/user-attachments/assets/c2d64062-872c-4d64-b48f-93e4cf041795" />  
 ```
 # saved_ind_sorted：保留的索引（记住的前 num_remember 个）

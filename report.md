@@ -78,7 +78,7 @@ parser.add_argument("--relabel_ratio",   # 论文中渐进式重标记比例ri�
 saved_ind_sorted = ind_sorted[:num_remember]   # 对应论文中的公式（6）
 ```
 
-公式（7）标签翻转--作者在论文中提到，同时也通过公式（5）和（6）的代码执行锁定了需要翻转标签的数据，但不知处于什么原因，但代码中未显式给出此公式的实现
+公式（7）标签翻转--作者在论文中提到，同时也通过公式（5）和（6）的代码执行锁定了需要翻转标签的数据，但不知处于什么原因，但代码中未显式给出此公式的实现  
 <img width="312" height="26" alt="image" src="https://github.com/user-attachments/assets/0a7cef44-62be-468d-a84f-14a5d6da5fc0" />  
 
 附录中的公式（8）到（18）--对文中的定理1和公式（4）进行证明所使用的，代码中不负责实现  

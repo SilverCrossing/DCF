@@ -17,7 +17,7 @@
 | 公式（1）损失均值 | 代码中未提及 |
 | 公式（2）带阻尼函数的损失均值 | loss.py的第19到24行代码 |
 | 公式（3）置信区间界定公式 | loss.py的第28到30行代码 |
-| 公式（4）损失下界 | loss.py的39到40行代码 |
+| 公式（4）损失下界 | loss.py的32到33行代码 |
 | 公式（5）渐进式重标记比例ri | main.py的第98行代码 |
 | 公式（6）基于ri的损失阈值筛选 | loss.py的第55行代码 |
 | 公式（7）标签翻转 | 代码中未提及 |
@@ -55,7 +55,7 @@ confidence_bound = co_lambda * (s + (co_lambda * torch.log(2 * s)) / (s * s)) / 
 confidence_bound = confidence_bound.squeeze()
 ```
 
-公式（4）损失下界--loss.py的第39到40行代码
+公式（4）损失下界--loss.py的第32到33行代码
 <img width="302" height="43" alt="image" src="https://github.com/user-attachments/assets/37a9cfec-cef7-4ca6-a691-453a07c8f0f6" />  
 ```
 # 只保留大于置信界的部分，作为高损失的判定依据，对应论文中第三章的公式（4）

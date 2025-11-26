@@ -55,7 +55,7 @@ confidence_bound = co_lambda * (s + (co_lambda * torch.log(2 * s)) / (s * s)) / 
 confidence_bound = confidence_bound.squeeze()
 ```
 
-公式（4）损失下界--loss.py的第32到33行代码
+公式（4）损失下界--loss.py的第32到33行代码  
 <img width="302" height="43" alt="image" src="https://github.com/user-attachments/assets/37a9cfec-cef7-4ca6-a691-453a07c8f0f6" />  
 ```
 # 只保留大于置信界的部分，作为高损失的判定依据，对应论文中第三章的公式（4）

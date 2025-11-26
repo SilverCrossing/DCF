@@ -16,7 +16,7 @@
 | 第二章第二公式 | loss.py的第19行代码 |
 | 公式（1）损失均值 | 代码中未提及 |
 | 公式（2）带阻尼函数的损失均值 | loss.py的第19到24行代码 |
-| 公式（3）置信区间界定公式 | loss.py的第36到38行代码 |
+| 公式（3）置信区间界定公式 | loss.py的第28到30行代码 |
 | 公式（4）损失下界 | loss.py的39到40行代码 |
 | 公式（5）渐进式重标记比例ri | main.py的第98行代码 |
 | 公式（6）基于ri的损失阈值筛选 | loss.py的第55行代码 |
@@ -47,7 +47,7 @@ loss_mul = soft_process(loss_mul)  # soft process is non-decreasing damping func
 loss_mean = (before_loss * s + loss_mul) / (s + 1)   # computing mean loss in Eq.2
 ```
 
-公式（3）置信区间界定--loss.py的第36到38行代码  
+公式（3）置信区间界定--loss.py的第28到30行代码  
 <img width="315" height="46" alt="image" src="https://github.com/user-attachments/assets/44a1ffb7-00d2-45e0-8f41-bafe65e4781f" />  
 ```
 # 计算置信界（confidence bound），对应论文中第三章的公式（3）

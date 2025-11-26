@@ -14,7 +14,9 @@ def PLC_uncertain_discard(user, item, train_mat, y, t, drop_rate, epoch, sn, bef
     
     s = torch.tensor(epoch + 1).float() # as the epoch starts from 0
     co_lambda = torch.tensor(co_lambda).float()    
-    loss = F.binary_cross_entropy_with_logits(y, t, reduce = False)
+    # 计算每个样本的二元交叉熵（带logits输入），不做reduce得到每个样本的损失，此处为论文所使用的损失函数，对应论文第二章BCE的公式``  
+    # y对应模型预测，t对应真实标签，reduce=False表示不进行求和或平均，返回每个样本的损失值``  
+    loss = F.binary_cross_entropy_with_logits(y, t, reduce = False)``  
     
     # 只对正样本（t==1）关注损失，把负样本的损失置零（loss * t）
     loss_mul = loss * t
@@ -62,5 +64,6 @@ def loss_function(y, t, drop_rate):
     loss_update = F.binary_cross_entropy_with_logits(y[ind_update], t[ind_update])
 
     return loss_update
+
 
 

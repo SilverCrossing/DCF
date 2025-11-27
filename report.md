@@ -85,7 +85,7 @@ saved_ind_sorted = ind_sorted[:num_remember]   # 对应论文中的公式（6）
 
 
 ## 5安装说明
-原始GitHub虽然未提供requirements.txt，但是所使用的包都在README中提及。我所使用的python版本为3.8.20，其中部分包为了适配实验室所使用的显卡，进行了升级，未完全按照原始GitHub列出的版本进行配置  
+原始GitHub虽然未提供requirements.txt，但是所使用的包都在README中提及。我所使用的python版本为3.8.20    
 论文所使用的依赖为numpy==1.19.5、scikit-learn==0.24.2、torch==1.8.1、CUDA==10.2
 ```
 # 创建并激活虚拟环境

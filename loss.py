@@ -20,9 +20,9 @@ def PLC_uncertain_discard(user, item, train_mat, y, t, drop_rate, epoch, sn, bef
     
     # 只对正样本（t==1）关注损失，把负样本的损失置零（loss * t）
     loss_mul = loss * t
-    # 对正样本损失做平滑处理（paper 中提出的 soft process）
+    # 对正样本损失做平滑处理
     loss_mul = soft_process(loss_mul)  # soft process is non-decreasing damping function in the paper
-    # 用之前的before_loss与当前loss_mul做指数/简单平均，计算历史平均损失，对应论文中第三章的公式（2）
+    # 用之前的before_loss与当前loss_mul做平均，计算历史平均损失，对应论文中第三章的公式（2）
     loss_mean = (before_loss * s + loss_mul) / (s + 1)   # computing mean loss in Eq.2.2
     
     # 计算置信界（confidence bound），对应论文中第三章的公式（3）
@@ -66,6 +66,7 @@ def loss_function(y, t, drop_rate):
     loss_update = F.binary_cross_entropy_with_logits(y[ind_update], t[ind_update])
 
     return loss_update
+
 
 
 
